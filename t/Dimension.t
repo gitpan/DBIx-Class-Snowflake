@@ -35,10 +35,10 @@ sub test_attributes
     is_deeply(
         $results,
         [
-            { 'name' => 'DimDate.date_id',      'type' => 'integer' },
-            { 'name' => 'DimDate.day_of_week',  'type' => 'integer' },
-            { 'name' => 'DimDate.day_of_month', 'type' => 'integer' },
-            { 'name' => 'DimDate.day_of_year',  'type' => 'integer' },
+            { 'name' => 'date_id',      'type' => 'integer' },
+            { 'name' => 'day_of_week',  'type' => 'integer' },
+            { 'name' => 'day_of_month', 'type' => 'integer' },
+            { 'name' => 'day_of_year',  'type' => 'integer' },
         ]
        );
 
@@ -47,9 +47,9 @@ sub test_attributes
     is_deeply(
         $results,
         [
-            { 'name' => 'DimDate.day_of_week',  'type' => 'integer' },
-            { 'name' => 'DimDate.day_of_month', 'type' => 'integer' },
-            { 'name' => 'DimDate.day_of_year',  'type' => 'integer' },
+            { 'name' => 'day_of_week',  'type' => 'integer' },
+            { 'name' => 'day_of_month', 'type' => 'integer' },
+            { 'name' => 'day_of_year',  'type' => 'integer' },
         ]
        );
 }

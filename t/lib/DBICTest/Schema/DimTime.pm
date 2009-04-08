@@ -1,5 +1,5 @@
 package DBICTest::Schema::DimTime;
-our $VERSION = '.10';
+our $VERSION = '0.09';
 
 
 

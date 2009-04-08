@@ -7,4 +7,4 @@ license: perl
 name: DBIx-Class-Snowflake
 requires: 
   DBIx::Class: any
-version: .10
+version: 0.09

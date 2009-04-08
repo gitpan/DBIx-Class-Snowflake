@@ -117,7 +117,7 @@ sub test_resolve_metrics
     my $results = $fact->_resolve_metrics('fact_id');
     is_deeply($results, [ 'fact_id' ]);
 
-    $results = $fact->_resolve_metrics('DimDate.day_of_week');
+    $results = $fact->_resolve_metrics('date_id.day_of_week');
     is_deeply($results, [ 'date_id', 'date_id.day_of_week' ]);
 
     $results = $fact->_resolve_metrics('day_of_cheese');
@@ -135,20 +135,20 @@ sub test_resolve_metrics_with_ignore
 
     # make sure it can still resolve other metrics
     $fact->ignore_columns(undef);
-    $results = $fact->_resolve_metrics('DimDate.day_of_week');
+    $results = $fact->_resolve_metrics('date_id.day_of_week');
     is_deeply($results, [ 'date_id', 'date_id.day_of_week' ]);
 
     $fact->ignore_columns('date_id');
-    $results = $fact->_resolve_metrics('DimDate.day_of_week');
+    $results = $fact->_resolve_metrics('date_id.day_of_week');
     is_deeply( $results, undef );
 
     # make sure setting to undef worked
     $fact->ignore_columns(undef);
-    $results = $fact->_resolve_metrics('DimDate.day_of_week');
+    $results = $fact->_resolve_metrics('date_id.day_of_week');
     is_deeply($results, [ 'date_id', 'date_id.day_of_week' ]);
 
     DBICTest::DimDate->ignore_columns('day_of_week');
-    $results = $fact->_resolve_metrics('DimDate.day_of_week');
+    $results = $fact->_resolve_metrics('date_id.day_of_week');
     is_deeply( $results, undef );
 }
 
@@ -160,13 +160,13 @@ sub test_resolve_dimension_to_attribute
     $results = $fact->_resolve_dimension_to_attribute('fact_id', 1);
     is_deeply( $results, { 'me.fact_id' => [1]} );
 
-    $results = $fact->_resolve_dimension_to_attribute('DimTime.hour', 14);
+    $results = $fact->_resolve_dimension_to_attribute('time_id.hour', 14);
     is_deeply( $results, { 'me.time_id' => [1]} );
 
-    $results = $fact->_resolve_dimension_to_attribute('DimTime.hour', 7);
+    $results = $fact->_resolve_dimension_to_attribute('time_id.hour', 7);
     is_deeply( $results, {'me.time_id' => [3]} );
 
-    $results = $fact->_resolve_dimension_to_attribute('DimTime.hour', 2);
+    $results = $fact->_resolve_dimension_to_attribute('time_id.hour', 2);
     is_deeply( $results, { 'me.time_id' => [2, 4] } );
 }
 
@@ -180,11 +180,11 @@ sub test_resolve_dimension_to_attribute_with_ignore
     is_deeply( $results, undef );
 
     $fact->ignore_columns('time_id');
-    $results = $fact->_resolve_dimension_to_attribute('DimTime.hour', 14);
+    $results = $fact->_resolve_dimension_to_attribute('time_id.hour', 14);
     is_deeply( $results, undef );
 
     DBICTest::DimTime->ignore_columns('hour');
-    $results = $fact->_resolve_dimension_to_attribute('DimTime.hour', 7);
+    $results = $fact->_resolve_dimension_to_attribute('time_id.hour', 7);
     is_deeply( $results, undef );
 
     # test to make sure that ignoring an unrelated column doesn't
@@ -202,15 +202,15 @@ sub test_dims_or_attrs
     is_deeply(
         $results,
         [
-            { 'name' => 'FactA.fact_id',        'type' => 'integer' },
-            { 'name' => 'DimDate.date_id',      'type' => 'integer' },
-            { 'name' => 'DimDate.day_of_week',  'type' => 'integer' },
-            { 'name' => 'DimDate.day_of_month', 'type' => 'integer' },
-            { 'name' => 'DimDate.day_of_year',  'type' => 'integer' },
-            { 'name' => 'DimTime.time_id',      'type' => 'integer' },
-            { 'name' => 'DimTime.hour',         'type' => 'integer' },
-            { 'name' => 'DimTime.minute',       'type' => 'integer' },
-            { 'name' => 'FactA.fact',           'type' => 'text' },
+            { 'name' => 'fact_id',              'type' => 'integer' },
+            { 'name' => 'date_id.date_id',      'type' => 'integer' },
+            { 'name' => 'date_id.day_of_week',  'type' => 'integer' },
+            { 'name' => 'date_id.day_of_month', 'type' => 'integer' },
+            { 'name' => 'date_id.day_of_year',  'type' => 'integer' },
+            { 'name' => 'time_id.time_id',      'type' => 'integer' },
+            { 'name' => 'time_id.hour',         'type' => 'integer' },
+            { 'name' => 'time_id.minute',       'type' => 'integer' },
+            { 'name' => 'fact',                 'type' => 'text' },
         ]
     );
 
@@ -219,14 +219,14 @@ sub test_dims_or_attrs
     is_deeply(
         $results,
         [
-            { 'name' => 'DimDate.date_id',      'type' => 'integer' },
-            { 'name' => 'DimDate.day_of_week',  'type' => 'integer' },
-            { 'name' => 'DimDate.day_of_month', 'type' => 'integer' },
-            { 'name' => 'DimDate.day_of_year',  'type' => 'integer' },
-            { 'name' => 'DimTime.time_id',      'type' => 'integer' },
-            { 'name' => 'DimTime.hour',         'type' => 'integer' },
-            { 'name' => 'DimTime.minute',       'type' => 'integer' },
-            { 'name' => 'FactA.fact',           'type' => 'text' },
+            { 'name' => 'date_id.date_id',      'type' => 'integer' },
+            { 'name' => 'date_id.day_of_week',  'type' => 'integer' },
+            { 'name' => 'date_id.day_of_month', 'type' => 'integer' },
+            { 'name' => 'date_id.day_of_year',  'type' => 'integer' },
+            { 'name' => 'time_id.time_id',      'type' => 'integer' },
+            { 'name' => 'time_id.hour',         'type' => 'integer' },
+            { 'name' => 'time_id.minute',       'type' => 'integer' },
+            { 'name' => 'fact',                 'type' => 'text' },
         ]
     );
 
@@ -235,11 +235,11 @@ sub test_dims_or_attrs
     is_deeply(
         $results,
         [
-            { 'name' => 'FactA.fact_id',   'type' => 'integer' },
-            { 'name' => 'DimTime.time_id', 'type' => 'integer' },
-            { 'name' => 'DimTime.hour',    'type' => 'integer' },
-            { 'name' => 'DimTime.minute',  'type' => 'integer' },
-            { 'name' => 'FactA.fact',      'type' => 'text' },
+            { 'name' => 'fact_id',         'type' => 'integer' },
+            { 'name' => 'time_id.time_id', 'type' => 'integer' },
+            { 'name' => 'time_id.hour',    'type' => 'integer' },
+            { 'name' => 'time_id.minute',  'type' => 'integer' },
+            { 'name' => 'fact',            'type' => 'text' },
         ]
     );
 }

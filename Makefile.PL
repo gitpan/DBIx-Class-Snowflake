@@ -9,7 +9,7 @@ WriteMakefile(
   NAME      => 'DBIx::Class::Snowflake',
   AUTHOR    => 'Matt\ Follett',
   ABSTRACT  => 'Easily use DBIC with snowflake schemas.',
-  VERSION   => '.10',
+  VERSION   => '0.09',
   EXE_FILES => [ qw() ],
   (eval { ExtUtils::MakeMaker->VERSION(6.21) } ? (LICENSE => 'perl') : ()),
   PREREQ_PM    => {

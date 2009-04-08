@@ -1,18 +1,8 @@
 package DBIx::Class::Snowflake::ResultSet::Dimension;
-our $VERSION = '.10';
+our $VERSION = '0.09';
 
 
-=head1 NAME
-
-=head1 ABSTRACT
-
-=head1 VERSION
-
-version .10
-
-DBIx::Class::Snowflake::ResultSet::Dimension - Custom resultset that allows you to get the attributes of a dimension
-
-=cut
+#@ABSTRACT - Custom resultset that allows you to get the attributes of a dimension
 
 use strict;
 use warnings;
@@ -28,3 +18,4 @@ Please see DBIx::Class::Snowflake::Dimension::attributes for details
 =cut
 
 1;
+

@@ -1,5 +1,5 @@
 package DBICTest::Schema::DimCountry;
-our $VERSION = '.10';
+our $VERSION = '0.09';
 
 
 
