@@ -1,5 +1,5 @@
 package DBIx::Class::Snowflake::Dimension;
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 
 =head1 NAME
@@ -8,7 +8,7 @@ DBIx::Class::Snowflake::Dimension
 
 =head1 VERSION
 
-version 0.09
+version 0.10
 
 =head1 ABSTRACT
 

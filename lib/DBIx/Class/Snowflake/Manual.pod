@@ -7,7 +7,7 @@ DBIx::Class::Snowflake::Manual - Manual for setting up DBIx::Class::Snowflake wi
   package My::Snowflake::DimDate;
   use base 'DBIx::Class';
   __PACKAGE__->table('DimDate');
-  
+
   # makes the class a Dimension of a Snowflake/Star
   __PACKAGE__->load_components("Snowflake::Dimension");
   # NECESSARY to use this resultset or something based off of it
@@ -25,7 +25,7 @@ DBIx::Class::Snowflake::Manual - Manual for setting up DBIx::Class::Snowflake wi
   # Allows you to tell Snowflake to not pay attention to the ID column
   # or other unnecessary columns
   __PACKAGE__->ignore_columns(['sale_id', 'some_other_bad_column']);
-  
+ 
   # meanwhile elsewhere in your code...
   my $possible_attributes = $schema->resultset('FactSale')->attributes();
   my $wanted_metrics = some_function_to_get_metrics($possible_attributes);
@@ -40,8 +40,45 @@ DBIx::Class::Snowflake::Manual - Manual for setting up DBIx::Class::Snowflake wi
 
 =head1 DESCRIPTION
 
-A full description of the module and its features.
-May include numerous subsections (i.e. =head2, =head3, etc.)
+The DBIx::Class::Snowflake package provides for components for use with
+snowflake and star schemas to make custom report generation easier.  It
+does not help with the initial setup though, the schema is assumed to
+already be prepared with the proper relationships.
+
+The package provides four components.  Two of the components should be
+loaded on the DBIx:Classes that represent tables.  The other two components
+are custom resultsets that should either be used for your tables or should
+be used be based off of for your resultsets. These are the components:
+
+=head2 DBIx::Class::Snowflake::Fact
+
+This component should be loaded on all Facts, it provides the methods listed
+below.  Simply use:
+
+   __PACKAGE__->load_components('Snowflake::Fact');
+
+* DBIx::Class::Snowflake::Dimension
+
+This component should be loaded on all the Dimensions, it provides the methods
+listed below.  To load it simply do this:
+
+   __PACKAGE__->load_components('Snowflake::Dimension');
+
+* DBIx::Class::Snowflake::ResultSet::Fact
+
+This allows you to treat a resultset and a row in a similar fashion in regards
+to the mehods listed below.  This is required or else calls to methods in
+::Snowflake will fail.
+
+   __PACKAGE__->result_class('DBIx::Class::Snowflake::ResultSet::Fact');
+
+* DBIx::Class::Snowflake::ResultSet::Dimension
+
+This allows you to treat a resultset and a row in a similar fashion in regards
+to the mehods listed below.  This is required or else calls to methods in
+::Snowflake will fail.
+
+   __PACKAGE__->result_class('DBIx::Class::Snowflake::ResultSet::Dimension');
 
 
 =head1 SUBROUTINES/METHODS
@@ -111,10 +148,10 @@ dimensions of that class and return a list of all not ignored attributes and
 their types in the following format:
 
 	[
-	   { 'name' => 'dim_rel_accessorA.col_A', 'type' => 'integer' },
-	   { 'name' => 'dim_rel_accessorA.col_B', 'type' => 'text'    },
-	   { 'name' => 'dim_rel_accessorB.col_1', 'type' => 'date'    },
-	   { 'name' => 'dim_rel_accessorC.count', 'type' => 'integer' },
+	   { 'name' => 'tableA.col_A', 'type' => 'integer' },
+	   { 'name' => 'tableA.col_B', 'type' => 'text'    },
+	   { 'name' => 'tableB.col_1', 'type' => 'date'    },
+	   { 'name' => 'tableC.count', 'type' => 'integer' },
 	]
 
 =head2 subs for just facts
@@ -184,41 +221,9 @@ This Module requires DBIx::Class.  This module should probably be used in only
 star and snowflake schemas, but if you find another use for this then please
 let me know via email.
 
-=head1 INCOMPATIBILITIES
-
-A list of any modules that this module cannot be used in conjunction with.
-This may be due to name conflicts in the interface, or competition for
-system or program resources, or due to internal limitations of Perl
-(for example, many modules that use source code filters are mutually
-incompatible).
-
 =head1 TODO
 
 =over
-
-=item *
-
-Base name of attribute on name of column and name of table 'table.column'
-=head1 TODO
-
-=over
-
-=item *
-
-Base name of attribute on name of column and name of table 'table.column'
-so that all attributes are guaranteed to have a unique name.
-
-=item *
-
-Modify generate_report so it generates a smaller set of JOINs
-
-=item *
-
-Modify the filter conversion code to be more efficient.
-
-=back
-
-so that all attributes are guaranteed to have a unique name.
 
 =item *
 
@@ -231,14 +236,6 @@ Modify the filter conversion code to be more efficient.
 =back
 
 =head1 BUGS AND LIMITATIONS
-
-There is one known limitation.  The module understands an attribute as the
-name of the relationship that got it there and the name of the column.  So,
-for example, if you had two classes, DimDate and FactSale, and FactSale had
-a relationship with DimDate called date_id and DimDate had an attribute called
-day_of_week this module would assume that date_id.day_of_week was unique.  If
-there is some other dimension that would translate to date_id.day_of_week
-there is no guarantee as to which one would be picked.
 
 The B<generate_report> function could be made to be more efficient.
 

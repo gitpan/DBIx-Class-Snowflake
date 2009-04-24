@@ -1,5 +1,5 @@
 package DBIx::Class::Snowflake;
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 
 =head1 NAME
@@ -149,23 +149,25 @@ sub _resolve_metrics
 {
     my $self         = shift;
     my $metric       = shift;
-    my $relationship = shift || '';
+    my $relationship = shift;
     my @stack;
     my $ignores = $self->get_ignore_columns();
-    my ( $needed_relationship, $needed_column ) = split( /\./, $metric );
+    my ( $needed_prefix, $needed_column ) = split( /\./, $metric );
+    my $prefix = $self->_get_result_source->from();
     if ( not defined $needed_column )
     {
-        $needed_column       = $needed_relationship;
-        $needed_relationship = undef;
+        $needed_column       = $needed_prefix;
+        $needed_prefix = undef;
     }
 
     if (
         $self->_stop_search(
-            $needed_relationship, $needed_column, $relationship, $ignores
+            $needed_prefix, $needed_column, $prefix, $ignores
         )
        )
     {
 
+		$metric =  "$relationship.$needed_column" if( defined $relationship );
         unshift( @stack, $metric );
         return \@stack;
     }
@@ -221,16 +223,16 @@ sub _keep_looking
 
 sub _stop_search
 {
-    my $self                = shift;
-    my $needed_relationship = shift;
-    my $needed_column       = shift;
-    my $relationship        = shift;
-    my $ignores             = shift;
-    my %columns             = $self->_columns_as_hash();
+    my $self          = shift;
+    my $needed_prefix = shift;
+    my $needed_column = shift;
+    my $prefix        = shift;
+    my $ignores       = shift;
+    my %columns       = $self->_columns_as_hash();
     return (
         (
-            not defined $needed_relationship
-               or $needed_relationship eq $relationship
+            not defined $needed_prefix
+               or $needed_prefix eq $prefix
         )
            and $columns{$needed_column}
            and not $ignores->{$needed_column}
@@ -254,20 +256,21 @@ sub _resolve_dimension_to_attribute
     my $ignores = $self->get_ignore_columns();
     my $source  = $self->_get_result_source();
     my $pk      = ( $source->primary_columns() )[0];
-    my ( $needed_relationship, $needed_column ) = split( /\./, $attribute );
+    my ( $needed_prefix, $needed_column ) = split( /\./, $attribute );
+    my $prefix = $source->from();
     my $rel_source;
 
     if ( not defined $needed_column )
     {
-        $needed_column       = $needed_relationship;
-        $needed_relationship = undef;
+        $needed_column       = $needed_prefix;
+        $needed_prefix = undef;
     }
 
     %columns = $self->_columns_as_hash();
 
     if (
         $self->_stop_search(
-            $needed_relationship, $needed_column, $relation, $ignores
+            $needed_prefix, $needed_column, $prefix, $ignores
         )
        )
     {
@@ -364,10 +367,7 @@ sub attributes
             else
             {
                 $info = $source->column_info($dimension);
-                if ( defined $relation )
-                {
-                    $dimension = $relation . '.' . $dimension;
-                }
+				$dimension = $source->from() . '.' . $dimension;
                 push(
                     @dimensions,
                     {

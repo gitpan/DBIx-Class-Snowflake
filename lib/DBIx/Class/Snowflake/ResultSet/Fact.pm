@@ -1,8 +1,18 @@
 package DBIx::Class::Snowflake::ResultSet::Fact;
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 
-#@ABSTRACT - Custom resultset for Facts
+=head1 NAME
+
+=head1 ABSTRACT
+
+=head1 VERSION
+
+version 0.10
+
+DBIx::Class::Snowflake::ResultSet::Fact - Custom resultset that allows you to get the attributes of a fact
+
+=cut
 
 use strict;
 use warnings;
@@ -19,4 +29,3 @@ Please see DBIx::Class::Snowflake::Fact::attributes for details
 
 
 1;
-

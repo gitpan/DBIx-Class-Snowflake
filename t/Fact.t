@@ -63,15 +63,15 @@ sub test_attributes
     is_deeply(
         $results,
         [
-            { 'name' => 'fact_id',              'type' => 'integer' },
-            { 'name' => 'date_id.date_id',      'type' => 'integer' },
-            { 'name' => 'date_id.day_of_week',  'type' => 'integer' },
-            { 'name' => 'date_id.day_of_month', 'type' => 'integer' },
-            { 'name' => 'date_id.day_of_year',  'type' => 'integer' },
-            { 'name' => 'time_id.time_id',      'type' => 'integer' },
-            { 'name' => 'time_id.hour',         'type' => 'integer' },
-            { 'name' => 'time_id.minute',       'type' => 'integer' },
-            { 'name' => 'fact',                 'type' => 'text' }
+            { 'name' => 'FactA.fact_id',        'type' => 'integer' },
+            { 'name' => 'DimDate.date_id',      'type' => 'integer' },
+            { 'name' => 'DimDate.day_of_week',  'type' => 'integer' },
+            { 'name' => 'DimDate.day_of_month', 'type' => 'integer' },
+            { 'name' => 'DimDate.day_of_year',  'type' => 'integer' },
+            { 'name' => 'DimTime.time_id',      'type' => 'integer' },
+            { 'name' => 'DimTime.hour',         'type' => 'integer' },
+            { 'name' => 'DimTime.minute',       'type' => 'integer' },
+            { 'name' => 'FactA.fact',           'type' => 'text' }
         ]
     );
 
@@ -80,14 +80,14 @@ sub test_attributes
     is_deeply(
         $results,
         [
-            { 'name' => 'date_id.date_id',      'type' => 'integer' },
-            { 'name' => 'date_id.day_of_week',  'type' => 'integer' },
-            { 'name' => 'date_id.day_of_month', 'type' => 'integer' },
-            { 'name' => 'date_id.day_of_year',  'type' => 'integer' },
-            { 'name' => 'time_id.time_id',      'type' => 'integer' },
-            { 'name' => 'time_id.hour',         'type' => 'integer' },
-            { 'name' => 'time_id.minute',       'type' => 'integer' },
-            { 'name' => 'fact',                 'type' => 'text' },
+            { 'name' => 'DimDate.date_id',      'type' => 'integer' },
+            { 'name' => 'DimDate.day_of_week',  'type' => 'integer' },
+            { 'name' => 'DimDate.day_of_month', 'type' => 'integer' },
+            { 'name' => 'DimDate.day_of_year',  'type' => 'integer' },
+            { 'name' => 'DimTime.time_id',      'type' => 'integer' },
+            { 'name' => 'DimTime.hour',         'type' => 'integer' },
+            { 'name' => 'DimTime.minute',       'type' => 'integer' },
+            { 'name' => 'FactA.fact',           'type' => 'text' },
         ]
     );
 
@@ -96,11 +96,11 @@ sub test_attributes
     is_deeply(
         $results,
         [
-            { 'name' => 'fact_id',         'type' => 'integer' },
-            { 'name' => 'time_id.time_id', 'type' => 'integer' },
-            { 'name' => 'time_id.hour',    'type' => 'integer' },
-            { 'name' => 'time_id.minute',  'type' => 'integer' },
-            { 'name' => 'fact',            'type' => 'text' },
+            { 'name' => 'FactA.fact_id',   'type' => 'integer' },
+            { 'name' => 'DimTime.time_id', 'type' => 'integer' },
+            { 'name' => 'DimTime.hour',    'type' => 'integer' },
+            { 'name' => 'DimTime.minute',  'type' => 'integer' },
+            { 'name' => 'FactA.fact',      'type' => 'text' },
         ]
     );
 }
@@ -133,8 +133,8 @@ sub test_generate_report
     my $fact = shift;
 
     my $data = {
-        'filters' => { 'time_id.hour' => 2 },
-        'metric'  => { 'time_id.hour' => 1, 'date_id.day_of_week' => 1, 'fact' => 1 }
+        'filters' => { 'DimTime.hour' => 2 },
+        'metric'  => { 'DimTime.hour' => 1, 'DimDate.day_of_week' => 1, 'fact' => 1 }
     };
     my $results  = $fact->generate_report($data);
     my $expected = $fact->result_source->resultset->search(
@@ -168,12 +168,12 @@ sub test_generate_report_deeply
     my $fact = shift;
 
     my $data = {
-        'filters' => { 'country_id.country' => 'USA'  },
+        'filters' => { 'DimCountry.country' => 'USA'  },
         'metric' => {
-            'city_id.city'        => 1,
-            'region_id.region'    => 1,
-            'country_id.country'  => 1,
-            'date_id.day_of_week' => 1
+            'DimCity.city'        => 1,
+            'DimRegion.region'    => 1,
+            'DimCountry.country'  => 1,
+            'DimDate.day_of_week' => 1
            }
     };
     my $results  = $fact->generate_report($data);

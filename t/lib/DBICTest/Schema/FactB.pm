@@ -1,5 +1,5 @@
 package DBICTest::Schema::FactB;
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 
 
